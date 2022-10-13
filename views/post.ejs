@@ -13,6 +13,7 @@
           <button class="btn btn-primary fa fa-heart" type="submit"></button>
         </form>
         <h3 class="col-3">Likes: <%= post.likes %></h3>
+        
         <%if(post.user == user.id){ %>
         <form
           action="/post/deletePost/<%= post.id %>?_method=DELETE"
@@ -24,9 +25,36 @@
         <%}%>
       </div>
     </div>
+    
+
     <div class="col-3 mt-5">
       <p><%= post.caption %></p>
+    </div> 
+
+    <div class="mt-5">
+      <h2>Leave a comment</h2>
+      <form action="/post/createComment" enctype="multipart/form-data" method="POST">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" placeholder="Add title" id="title" name="title">
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label">Message</label>
+          <textarea class="form-control" id="message" name="message"></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
+      </form>
     </div>
+
+   
+
+   
+
+   
+
+</div>
+
     <div class="col-6 mt-5">
       <a class="btn btn-primary" href="/profile">Return to Profile</a>
       <a class="btn btn-primary" href="/feed">Return to Feed</a>

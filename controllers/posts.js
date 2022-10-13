@@ -1,5 +1,6 @@
 const cloudinary = require("../middleware/cloudinary");
 const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 
 module.exports = {
   getProfile: async (req, res) => {
@@ -29,7 +30,9 @@ module.exports = {
   createPost: async (req, res) => {
     try {
       // Upload image to cloudinary
+      console.log(req.body)
       const result = await cloudinary.uploader.upload(req.file.path);
+      console.log()
 
       await Post.create({
         title: req.body.title,
@@ -73,4 +76,19 @@ module.exports = {
       res.redirect("/profile");
     }
   },
+  createComment: async (req, res) => {
+    console.log(req)
+    try {
+        await Comment.create({ title: req.body.title, message: req.body.message, user: req.user.id})
+        console.log("Comment created")
+        res.redirect("/post")
+    }
+    catch (err) {
+        console.log(err);
+    }
+  },
+
+  
+ 
+ 
 };
