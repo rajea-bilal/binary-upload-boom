@@ -11,6 +11,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   getFeed: async (req, res) => {
     try {
       const posts = await Post.find().sort({ createdAt: "desc" }).lean();
@@ -19,21 +20,25 @@ module.exports = {
       console.log(err);
     }
   },
+
   getPost: async (req, res) => {
     try {
       const post = await Post.findById(req.params.id);
-      res.render("post.ejs", { post: post, user: req.user });
+      // we're not adding any new fields in the comments because it will automatically grab the two new fields which were created in the Model when it finds the comments associated with a particular post
+      const comments = await Comment.find( { post: req.params.id }).lean();
+      res.render("post.ejs", { post: post, user: req.user, comments: comments });
+      // Because we have updated the Model, it will grab everything from the comments and plonk it in the comments, we dont have to separately add fields here.
     } catch (err) {
       console.log(err);
     }
   },
+
   createPost: async (req, res) => {
     try {
       // Upload image to cloudinary
-      console.log(req.body)
+     
       const result = await cloudinary.uploader.upload(req.file.path);
-      console.log()
-
+      
       await Post.create({
         title: req.body.title,
         image: result.secure_url,
@@ -48,6 +53,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   likePost: async (req, res) => {
     try {
       await Post.findOneAndUpdate(
@@ -62,6 +68,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   deletePost: async (req, res) => {
     try {
       // Find post by id
@@ -76,19 +83,10 @@ module.exports = {
       res.redirect("/profile");
     }
   },
-  createComment: async (req, res) => {
-    console.log(req)
-    try {
-        await Comment.create({ title: req.body.title, message: req.body.message, user: req.user.id})
-        console.log("Comment created")
-        res.redirect("/post")
-    }
-    catch (err) {
-        console.log(err);
-    }
-  },
+
+};
+ 
 
   
  
  
-};
